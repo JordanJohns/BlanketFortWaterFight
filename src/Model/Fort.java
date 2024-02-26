@@ -8,24 +8,26 @@ public class Fort {
     private List<Coordinate> damagedSections;
     private Polyomino polyomino;
 
+    public Fort(char letter) {
+        this.letter = letter;
+    }
+
     public char getLetter() {
         return this.letter;
     }
 
     public boolean checkHit(Coordinate shootPos) {
-        if (!polyomino.Contains(shootPos)) {
+        if (!polyomino.contains(shootPos)) {
             return false;
         }
 
         damagedSections.add(shootPos);
         return true;
     }
-
-    public Fort(char letter) {
-        this.letter = letter;
-    }
-
+    
     public char[][] generateFort(char[][] map) {
-        return null;    // TODO: will return map + new polyomino
+        //Constructor of Polyomino generates the polyomino and fills the map given
+        Polyomino polyomino = new Polyomino(map, letter);
+        return map;
     }
 }
