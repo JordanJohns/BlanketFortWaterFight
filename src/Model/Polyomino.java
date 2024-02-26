@@ -19,18 +19,31 @@ public class Polyomino {
     }
 
     private void generate() {
-        Coordinate startingPosition = findStartingPosition();
-        positions.add(new Coordinate(startingPosition));
-        int x = startingPosition.getX();
-        int y = startingPosition.getY();
-        map[x][y] = letter;
-        for (int i = 1; i < SIZE; i++) {
-            Coordinate newPosition = findNewPosition();
-            positions.add(newPosition);
-            x = newPosition.getX();
-            y = newPosition.getY();
+        boolean validPositionIsFound = false;
+        //int numTimesInLoop = 0;
+        while(!validPositionIsFound){
+            Coordinate startingPosition = findStartingPosition();
+            positions.add(new Coordinate(startingPosition));
+            int x = startingPosition.getX();
+            int y = startingPosition.getY();
             map[x][y] = letter;
+            for (int i = 1; i < SIZE; i++) {
+                Coordinate newPosition = findNewPosition();
+                if(newPosition != null){
+                    positions.add(newPosition);
+                    x = newPosition.getX();
+                    y = newPosition.getY();
+                    map[x][y] = letter;
+                    validPositionIsFound = true;
+                }else{
+                    validPositionIsFound = false;
+                    removeFromMap();
+                    break;
+                }
+            }
+            //numTimesInLoop++;
         }
+        //System.out.println("numTimesInLoop: " + numTimesInLoop);
     }
 
     private Coordinate findStartingPosition() {
@@ -80,7 +93,9 @@ public class Polyomino {
                 break;
             }
             if (testBreakNum >= 100) {
-                throw new RuntimeException("ERROR: Insufficent space for Polyomino");
+                //throw new RuntimeException("ERROR: Insufficent space for Polyomino");
+                selectedPosition = null;
+                break;
             }
             testBreakNum++;
         }
@@ -95,6 +110,17 @@ public class Polyomino {
             return false;
         }
         return true;
+    }
+
+    private void removeFromMap(){
+        int x;
+        int y;
+        for(Coordinate coordinate: positions){
+            x = coordinate.getX();
+            y = coordinate.getY();
+            map[x][y] = '.';
+        }
+        positions.clear();
     }
 
     public boolean contains(Coordinate position) {
