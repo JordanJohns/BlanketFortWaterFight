@@ -8,7 +8,10 @@ public class Coordinate {
         this.x = x;
         this.y = y;
     }
-
+    public Coordinate(Coordinate coordinate){
+        this.x = coordinate.getX();
+        this.y = coordinate.getY();
+    }
     public int getX() {
         return x;
     }
