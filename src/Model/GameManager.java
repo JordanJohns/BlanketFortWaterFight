@@ -71,8 +71,13 @@ public class GameManager {
     }
 
     public void handleAI() {
-        // TODO: Make the AI take their turns
-        //       (Probably just shoot randomly?)
+        for (Fort enemy : enemies) {
+            if (enemy.isDestroyed()) {
+                continue;
+            }
+
+            enemyPoints += enemy.getPointsPerHit();
+        }
     }
 
     public boolean isValidPlayerShootPos(Coordinate shootPos) {
@@ -90,7 +95,11 @@ public class GameManager {
     }
 
     public int getEnemiesRemaining() {
-        return enemies.size();
+        int enemiesRemaining = 0;
+        for (Fort enemy : enemies) {
+            enemiesRemaining += enemy.isDestroyed() ? 0 : 1;
+        }
+        return enemiesRemaining;
     }
 
     public int getMapSize() {

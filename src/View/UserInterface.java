@@ -5,7 +5,6 @@ import java.util.*;
 import Model.*;
 
 public class UserInterface {
-    private Menu mainMenu;
     private GameManager gameManager;
 
 
@@ -16,13 +15,6 @@ public class UserInterface {
             System.out.println(e);
             return;
         }
-
-        // TODO: Do we even need a main menu?
-        Menu.MenuOption[] mainMenuOptions = new Menu.MenuOption[]{
-            new Menu.MenuOption("Option 1", null),
-            new Menu.MenuOption("Option 2", null),
-        };
-        mainMenu = new Menu(mainMenuOptions);
 
         System.out.println("Starting game with " + numEnemies + " enemies...\n");
         GameLoop(isCheatMode);
@@ -37,7 +29,11 @@ public class UserInterface {
             gameManager.handleAI();
         }
 
-        System.out.println("Your fort is all wet! You lost!");
+        if (gameManager.getEnemiesRemaining() > 0) {
+            System.out.println("Your fort is all wet! You lost!");
+        } else {
+            System.out.println("You have soaked all of your enemies! you win!");
+        }
         displayMap(true);
     }
 
@@ -78,6 +74,7 @@ public class UserInterface {
             }
         } while (shootPos == null || !isValidPlayerShootPos);
 
+        scanner.close();
         return shootPos;
     }
 

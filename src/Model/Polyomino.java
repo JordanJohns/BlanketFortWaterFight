@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.management.RuntimeErrorException;
-
 public class Polyomino {
     private final int SIZE = 5;
     private List<Coordinate> positions = new ArrayList<>();

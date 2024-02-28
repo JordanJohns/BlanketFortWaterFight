@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Fort {
     private char letter;
-    
+
     private List<Coordinate> damagedSections;
     private Polyomino polyomino;
 
@@ -50,10 +50,6 @@ public class Fort {
         return map;
     }
 
-    public void givePoints() {
-        points += getPointsPerHit();
-    }
-
     // ----- Getters -----
 
     public List<Coordinate> getPositions() {
@@ -62,5 +58,9 @@ public class Fort {
 
     public boolean contains(Coordinate position) {
         return polyomino.contains(position);
+    }
+
+    public boolean isDestroyed() {
+        return damagedSections.size() >= 5;
     }
 }
