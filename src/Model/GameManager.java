@@ -95,11 +95,9 @@ public class GameManager {
     }
 
     public int getEnemiesRemaining() {
-        int enemiesRemaining = 0;
-        for (Fort enemy : enemies) {
-            enemiesRemaining += enemy.isDestroyed() ? 0 : 1;
-        }
-        return enemiesRemaining;
+        return enemies.size() - (int)enemies.stream()
+            .filter(Fort::isDestroyed)
+            .count();
     }
 
     public int getMapSize() {
