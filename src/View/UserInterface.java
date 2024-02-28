@@ -17,13 +17,14 @@ public class UserInterface {
             return;
         }
 
+        // TODO: Do we even need a main menu?
         Menu.MenuOption[] mainMenuOptions = new Menu.MenuOption[]{
             new Menu.MenuOption("Option 1", null),
             new Menu.MenuOption("Option 2", null),
         };
         mainMenu = new Menu(mainMenuOptions);
 
-        System.out.println("Starting game with " + numEnemies + " enemies...");
+        System.out.println("Starting game with " + numEnemies + " enemies...\n");
         GameLoop(isCheatMode);
     }
 

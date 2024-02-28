@@ -9,20 +9,12 @@ public class GameManager {
     private char[][] map;
     private char[][] revealedMap;
     
-    private Fort player;
     private List<Fort> enemies = new ArrayList<>();
     private int enemyPoints = 0;
 
     public GameManager(int numEnemies) throws Exception {
-
         map = generateMap('.');
         revealedMap = generateMap('~');
-
-        player = setupFort('z');
-        // I thought player also had a fort to display on map. Since I was wrong, don't need below code -Jordan
-        // for (Coordinate playerFortPosition : player.getPositions()) {
-        //     revealPosition(playerFortPosition);
-        // }
 
         char currentEnemyLetter = 'A';
         for (int i = 0; i < numEnemies; i++) {
@@ -56,7 +48,6 @@ public class GameManager {
         for (Fort enemy : enemies) {
             if (enemy.checkHit(shootPos)) {
                 changeMap(shootPos, (char)(enemy.getLetter() + 32));    // char + 32 is lowercase of that letter
-                player.givePoints();
             }
         }
 
@@ -85,11 +76,6 @@ public class GameManager {
     }
 
     public boolean isValidPlayerShootPos(Coordinate shootPos) {
-        if (player.contains(shootPos)) {
-            return false;
-        }
-
-
         return true;
     }
 

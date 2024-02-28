@@ -1,14 +1,16 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Fort {
     private char letter;
-    private int points = 0;
+    
     private List<Coordinate> damagedSections;
     private Polyomino polyomino;
 
     public Fort(char letter) {
+        damagedSections = new ArrayList<Coordinate>();
         this.letter = letter;
     }
 
