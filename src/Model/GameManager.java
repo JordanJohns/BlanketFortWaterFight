@@ -4,16 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
+    private final int MAP_SIZE = 10;
+
     private char[][] map;
     private char[][] revealedMap;
     
     private Fort player;
     private List<Fort> enemies = new ArrayList<>();
+    private int enemyPoints = 0;
 
     public GameManager(int numEnemies) throws Exception {
-        player = setupFort('A');
 
-        char currentEnemyLetter = 'B';
+        map = generateMap('.');
+        revealedMap = generateMap('~');
+
+        player = setupFort('z');
+        // I thought player also had a fort to display on map. Since I was wrong, don't need below code -Jordan
+        // for (Coordinate playerFortPosition : player.getPositions()) {
+        //     revealPosition(playerFortPosition);
+        // }
+
+        char currentEnemyLetter = 'A';
         for (int i = 0; i < numEnemies; i++) {
             Fort enemy = setupFort(currentEnemyLetter);
             if (enemy == null) 
@@ -25,22 +36,47 @@ public class GameManager {
         }
     }
 
+    private char[][] generateMap(char letterToFill) {
+        char[][] map = new char[MAP_SIZE][MAP_SIZE];
+        for (int x = 0; x < MAP_SIZE; x++) {
+            for (int y = 0; y < MAP_SIZE; y++) {
+                map[x][y] = letterToFill;
+            }
+        }
+        return map;
+    }
+
     private Fort setupFort(char letter) {
         Fort fort = new Fort(letter);
         map = fort.generateFort(map);
         return fort;
     }
 
-    public void handleShot(Coordinate shootPos) {
+    public void handlePlayerShot(Coordinate shootPos) {
         for (Fort enemy : enemies) {
             if (enemy.checkHit(shootPos)) {
                 changeMap(shootPos, (char)(enemy.getLetter() + 32));    // char + 32 is lowercase of that letter
+                player.givePoints();
             }
         }
+
+        revealPosition(shootPos);
     }
 
     private void changeMap(Coordinate pos, char newLetter) {
         map[pos.getX()][pos.getY()] = newLetter;
+    }
+
+    private void revealPosition(Coordinate position) {
+        char letterToReveal = map[position.getX()][position.getY()];
+        if (letterToReveal == '.') {
+            letterToReveal = ' ';
+        } 
+        else {
+            letterToReveal = 'X';
+        }
+
+        revealedMap[position.getX()][position.getY()] = letterToReveal;
     }
 
     public void handleAI() {
@@ -48,17 +84,38 @@ public class GameManager {
         //       (Probably just shoot randomly?)
     }
 
-    // --------------- Getters and Setters ---------------
-
-    public char[][] getMap(boolean isRevealed) {
-        if (isRevealed) {
-            return revealedMap;
+    public boolean isValidPlayerShootPos(Coordinate shootPos) {
+        if (player.contains(shootPos)) {
+            return false;
         }
 
-        return map;
+
+        return true;
+    }
+
+    // --------------- Getters and Setters ---------------
+
+    public char[][] getMap(boolean isCheatMode) {
+        if (isCheatMode) {
+            return map;
+        }
+
+        return revealedMap;
     }
 
     public int getEnemiesRemaining() {
         return enemies.size();
+    }
+
+    public int getMapSize() {
+        return this.MAP_SIZE;
+    }
+
+    public boolean enemiesHaveWon() {
+        return enemyPoints >= 2500;
+    }
+
+    public int getEnemyPoints() {
+        return enemyPoints;
     }
 }

@@ -1,3 +1,5 @@
+package View;
+
 /**
  * Menu class controls MenuOptions and can display to the user.
  */

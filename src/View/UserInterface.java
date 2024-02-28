@@ -1,3 +1,5 @@
+package View;
+
 import java.util.*;
 
 import Model.*;
@@ -7,7 +9,7 @@ public class UserInterface {
     private GameManager gameManager;
 
 
-    public void startGame(int numEnemies) {
+    public void startGame(int numEnemies, boolean isCheatMode) {
         try {
             gameManager = new GameManager(numEnemies);
         } catch (Exception e) {
@@ -22,23 +24,27 @@ public class UserInterface {
         mainMenu = new Menu(mainMenuOptions);
 
         System.out.println("Starting game with " + numEnemies + " enemies...");
-        GameLoop();
+        GameLoop(isCheatMode);
     }
 
-    private void GameLoop() {
-        displayMap();
-        System.out.println("Opponent's points: 0"); // TODO
+    private void GameLoop(boolean isCheatMode) {
+        while (gameManager.getEnemiesRemaining() > 0 && !gameManager.enemiesHaveWon()) {
+            displayMap(isCheatMode);
+            System.out.println("Opponent's points: " + gameManager.getEnemyPoints() + "/2500");
 
-        while (gameManager.getEnemiesRemaining() > 0) {
-            gameManager.handleShot(getShootPos());
+            gameManager.handlePlayerShot(getShootPos());
             gameManager.handleAI();
         }
+
+        System.out.println("Your fort is all wet! You lost!");
+        displayMap(true);
     }
 
     private Coordinate getShootPos() {
         Scanner scanner = new Scanner(System.in);
 
         Coordinate shootPos = null;
+        boolean isValidPlayerShootPos = false;
         do {
             System.out.print("Enter the square you want to shoot: ");
             String input = scanner.nextLine();
@@ -49,13 +55,13 @@ public class UserInterface {
 
             input = input.toLowerCase();
 
-            int x = (int)(input.charAt(0) - 'a') + 1;
-            int y;
+            int y = (int)(input.charAt(0) - 'a') + 1;
+            int x;
             if (input.length() >= 3 && input.charAt(2) == '0') {
                 // Special case because 10 is two digits
-                y = 10;
+                x = 10;
             } else {
-                y = (int)(input.charAt(1) - '0');
+                x = (int)(input.charAt(1) - '0');
             }
 
             if (x < 1 || x > 10 || y < 1 || y > 10) {
@@ -63,25 +69,33 @@ public class UserInterface {
                 continue;
             }
 
-            shootPos = new Coordinate(x, y);
-        } while (shootPos == null);
+            shootPos = new Coordinate(x - 1, y - 1);   
+
+            isValidPlayerShootPos = gameManager.isValidPlayerShootPos(shootPos);
+            if (!isValidPlayerShootPos) {
+                System.out.println("Invalid shoot position!");
+            }
+        } while (shootPos == null || !isValidPlayerShootPos);
 
         return shootPos;
     }
 
-    private void displayMap() {
-        // TODO: This is a placeholder
+    private void displayMap(boolean isCheatMode) {
         System.out.println("Game Board:");
-        System.out.println("    1  2  3  4  5  6  7  8  9 10");
-        System.out.println("  A ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  B ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  C ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  D ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  E ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  F ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  G ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  H ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  I ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
-        System.out.println("  J ~  ~  ~  ~  ~  ~  ~  ~  ~  ~");
+        System.out.print("     1  2  3  4  5  6  7  8  9 10");
+
+        int mapSize = gameManager.getMapSize();
+        char[][] map = gameManager.getMap(isCheatMode);
+
+        char currentRow = 'A'; 
+        for (int y = 0; y < mapSize; y++) {
+            System.out.print("\n  " + currentRow);
+            for (int x = 0; x < mapSize; x++) {
+                System.out.print("  " + map[x][y]);
+            }
+            currentRow = (char)(currentRow + 1);
+        }
+
+        System.out.println();
     }
 }

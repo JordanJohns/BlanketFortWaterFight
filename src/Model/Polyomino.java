@@ -24,8 +24,10 @@ public class Polyomino {
         while(!validPositionIsFound){
             Coordinate startingPosition = findStartingPosition();
             positions.add(new Coordinate(startingPosition));
+
             int x = startingPosition.getX();
             int y = startingPosition.getY();
+
             map[x][y] = letter;
             for (int i = 1; i < SIZE; i++) {
                 Coordinate newPosition = findNewPosition();
@@ -130,5 +132,9 @@ public class Polyomino {
             }
         }
         return false;
+    }
+
+    public List<Coordinate> getPositions() {
+        return this.positions;
     }
 }
