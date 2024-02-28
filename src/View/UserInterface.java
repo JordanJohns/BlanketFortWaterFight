@@ -50,23 +50,7 @@ public class UserInterface {
                 continue;
             }
 
-            input = input.toLowerCase();
-
-            int y = (int)(input.charAt(0) - 'a') + 1;
-            int x;
-            if (input.length() >= 3 && input.charAt(2) == '0') {
-                // Special case because 10 is two digits
-                x = 10;
-            } else {
-                x = (int)(input.charAt(1) - '0');
-            }
-
-            if (x < 1 || x > 10 || y < 1 || y > 10) {
-                System.out.println("Invalid Coordinate, please try again. (" + input + ", " + x + ", " + y + ")" );
-                continue;
-            }
-
-            shootPos = new Coordinate(x - 1, y - 1);   
+            shootPos = parseInput(input);
 
             isValidPlayerShootPos = gameManager.isValidPlayerShootPos(shootPos);
             if (!isValidPlayerShootPos) {
@@ -75,6 +59,17 @@ public class UserInterface {
         } while (shootPos == null || !isValidPlayerShootPos);
 
         return shootPos;
+    }
+
+    private Coordinate parseInput(String input) {
+        int y = input.charAt(0) - 'a' + 1;
+        int x = Character.isDigit(input.charAt(1)) ? input.charAt(1) - '0' : 10;
+
+        if (x < 1 || x > 10 || y < 1 || y > 10) {
+            return null;
+        }
+
+        return new Coordinate(x - 1, y - 1);
     }
 
     private void displayMap(boolean isCheatMode) {
