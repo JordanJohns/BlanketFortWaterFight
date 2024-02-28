@@ -74,7 +74,6 @@ public class UserInterface {
             }
         } while (shootPos == null || !isValidPlayerShootPos);
 
-        scanner.close();
         return shootPos;
     }
 
