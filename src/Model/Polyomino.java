@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Polyomino {
     private final int SIZE = 5;
+    private final int BREAK_POINT = 100;
     private List<Coordinate> positions = new ArrayList<>();
     private char[][] map;
     private char letter;
@@ -18,39 +19,39 @@ public class Polyomino {
 
     private void generate() {
         boolean validPositionIsFound = false;
-        //int numTimesInLoop = 0;
+        int numTimesInLoop = 0;
         while(!validPositionIsFound){
             Coordinate startingPosition = findStartingPosition();
             positions.add(new Coordinate(startingPosition));
-
             int x = startingPosition.getX();
             int y = startingPosition.getY();
-
             map[x][y] = letter;
             for (int i = 1; i < SIZE; i++) {
                 Coordinate newPosition = findNewPosition();
-                if(newPosition != null){
+                if (newPosition != null) {
                     positions.add(newPosition);
                     x = newPosition.getX();
                     y = newPosition.getY();
                     map[x][y] = letter;
                     validPositionIsFound = true;
-                }else{
+                } else {
                     validPositionIsFound = false;
                     removeFromMap();
                     break;
                 }
             }
-            //numTimesInLoop++;
+            if(numTimesInLoop >= BREAK_POINT){
+                throw new RuntimeException("ERROR: No space in map for another Polyomino");
+            }
+            numTimesInLoop++;
         }
-        //System.out.println("numTimesInLoop: " + numTimesInLoop);
     }
 
     private Coordinate findStartingPosition() {
         int x;
         int y;
         Coordinate position;
-        int testBreakNum = 0;
+        int numTimesInLoop = 0;
         while (true) {
             x = ThreadLocalRandom.current().nextInt(0, map.length - 1);
             y = ThreadLocalRandom.current().nextInt(0, map.length - 1);
@@ -58,10 +59,9 @@ public class Polyomino {
                 position = new Coordinate(x, y);
                 break;
             }
-            testBreakNum++;
-            // Test statement
-            if (testBreakNum >= 500) {
-                throw new RuntimeException("ERROR: Map is full");
+            numTimesInLoop++;
+            if (numTimesInLoop >= BREAK_POINT) {
+                throw new RuntimeException("ERROR: No space in map for another Polyomino");
             }
         }
         return position;
@@ -69,7 +69,7 @@ public class Polyomino {
 
     private Coordinate findNewPosition() {
         Coordinate selectedPosition;
-        int testBreakNum = 0;
+        int numTimesInLoop = 0;
         while (true) {
             if (positions.size() > 1) {
                 int randNum = ThreadLocalRandom.current().nextInt(0, positions.size() - 1);
@@ -92,12 +92,12 @@ public class Polyomino {
                 selectedPosition = new Coordinate(x, y + 1);
                 break;
             }
-            if (testBreakNum >= 100) {
-                //throw new RuntimeException("ERROR: Insufficent space for Polyomino");
+
+            if (numTimesInLoop >= BREAK_POINT) {
                 selectedPosition = null;
                 break;
             }
-            testBreakNum++;
+            numTimesInLoop++;
         }
         return selectedPosition;
     }
@@ -115,19 +115,14 @@ public class Polyomino {
     private void removeFromMap(){
         int x;
         int y;
-        for(Coordinate coordinate: positions){
-            x = coordinate.getX();
-            y = coordinate.getY();
-            map[x][y] = '.';
-        }
+        positions.stream().forEach(s -> map[s.getX()][s.getY()] = '.');
         positions.clear();
     }
 
     public boolean contains(Coordinate position) {
-        for (int i = 0; i < positions.size(); i++) {
-            if (position.equals(positions.get(i))) {
-                return true;
-            }
+        int numOfThatPosition = (int)positions.stream().filter(s -> s.equals(position)).count();
+        if(numOfThatPosition >= 1){
+            return true;
         }
         return false;
     }
