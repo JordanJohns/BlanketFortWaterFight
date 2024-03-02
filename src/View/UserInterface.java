@@ -4,9 +4,12 @@ import java.util.*;
 
 import Model.*;
 
+
+/**
+ * Runs the game. Gets player input and passes it to the GameManager.
+ */
 public class UserInterface {
     private GameManager gameManager;
-
 
     public void startGame(int numEnemies, boolean isCheatMode) {
         try {

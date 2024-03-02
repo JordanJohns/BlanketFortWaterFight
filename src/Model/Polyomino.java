@@ -3,7 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
+/**
+ * Stores information about the shape of a fort. Has methods to generate itself
+ */
 public class Polyomino {
     private final int SIZE = 5;
     private final int BREAK_POINT = 100;

@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controls the game. Handles enemy turns and the effect of the player's choices.
+ */
 public class GameManager {
     private final int MAP_SIZE = 10;
 

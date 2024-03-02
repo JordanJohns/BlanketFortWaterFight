@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The fort for each enemy. Store location, letter, and damage the fort takes during the game.
+ */
 public class Fort {
     private char letter;
 
