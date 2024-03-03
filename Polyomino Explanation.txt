@@ -1,0 +1,22 @@
+How our OOD supports putting a polyomino of letters on the map:
+
+This happens when a Polyomino object is made. Polyomino's constructor is passed a 2-dimensional
+character array and a character, which it sets the map and letter fields to. It then calls the
+generate method.
+
+generate first calls the findStartingPosition method, which randomly finds and returns an
+available position on the map in the form of an object of type Coordinate, which represents
+a position on the map. It adds that to the positions field, which is a List of Coordinates.
+It puts the letter on the map at the indices given by that Coordinate.
+
+generate then fills the map with the other four blocks of the Polyomino. It does this for each
+one by calling the findNewPosition method, which randomly chooses a Coordinate object from
+positions, checks each adjacent position, and returns the selected position in the form of a
+Coordinate object if it is empty, and null otherwise. If findNewPosition returns a Coordinate,
+that is added to positions and the corresponding indices on the map are filled with the letter
+field. Otherwise, it calls the removeFromMap method, which uses a stream to set all the indices
+of the map represented by the elements in positions to periods, which represent empty spaces,
+and removes all elements from positions. This is done because when findNewPosition returns null,
+it means that there is no more room in the location chosen to add to the polyomino, meaning
+that that polyomino would not have 5 blocks. This algorithm is done in a while loop, so it will
+do this same process over again to choose another location to put that polyomino.
